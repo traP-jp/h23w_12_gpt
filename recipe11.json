@@ -1,0 +1,27 @@
+{
+    "name": "トスカーナ風リブアイステーキ",
+    "comment": "この名前から連想されるのは、イタリアのトスカーナ地方の風味とリッチな味わいです。そこで、トスカーナ風のリブアイステーキを想像しましょう。この料理は、ハーブの香りとジューシーな肉の旨味が特徴です。見た目にも豪華で、特別なディナーにぴったりの一品になるでしょう。",
+    "ingredient": [
+        "リブアイステーキ 2枚",
+        "ローズマリー 2枝",
+        "ニンニク 3片（スライス）",
+        "オリーブオイル 大さじ3",
+        "塩 適量",
+        "黒こしょう 適量"
+    ],
+    "seasoning": [
+        "バター 50g",
+        "赤ワイン 100ml",
+        "バルサミコ酢 大さじ2"
+    ],
+    "instruction": [
+        "リブアイステーキに塩と黒こしょうを丁寧にまぶす。",
+        "フライパンにオリーブオイルを熱し、ニンニクとローズマリーを加えて香りを出す。",
+        "リブアイステーキを加えて両面を焼き、取り出しておく。",
+        "フライパンにバターを入れ、赤ワインとバルサミコ酢を加えてソースを作る。",
+        "お皿にリブアイステーキを盛り付け、ソースをかけて完成。"
+    ],
+    "detailed_description": [
+        "A dish inspired by the flavors of Tuscany, featuring a succulent ribeye steak seasoned with rosemary and garlic, seared to perfection. Served on a sophisticated plate with a rich red wine and balsamic vinegar reduction drizzled over the steak, creating a visually stunning and flavorful experience."
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "cooking_name": "アノニマス",
+    "comment": "アノニマスという名前は、謎めいた印象と秘密を想起させます。この料理は、その神秘さを表現するためにシックでモダンな要素を取り入れたものにします。真っ黒なプレートに盛り付けられた、ダークカラーで統一された料理を想像していただければと思います。",
+    "material": [
+        "ブラックリゾット 200g（すでに色がついたもの）",
+        "イカスミ 10g",
+        "イカ 1杯（切り身）",
+        "アスパラガス 6本（ホワイトアスパラガスが好ましい）",
+        "椎茸 4個（薄切り）"
+    ],
+    "seasoning": [
+        "トリュフオイル 大さじ2",
+        "海塩 適量",
+        "フレッシュなブラックペッパー 適量",
+        "黒ゴマ 適量",
+        "ブラックオリーブ 6個（スライス）"
+    ],
+    "way_of_making": [
+        "イカは食べやすいサイズに切る。",
+        "ブラックリゾットは袋の指示に従ってアルデンテに茹でる。",
+        "フライパンにトリュフオイルを熱し、イカと椎茸を炒める。",
+        "アスパラガスは塩水でサッと茹でておく。",
+        "茹で上がったリゾットにイカスミを混ぜ合わせる。",
+        "リゾットを皿に盛り、炒めたイカと椎茸、茹でたアスパラガスをトッピングする。",
+        "最後にブラックオリーブと黒ゴマを散らし、海塩とフレッシュなブラックペッパーで味を整えて完成。"
+    ],
+    "Detailed Description": [
+        "The 'Anonymous' is a mysteriously alluring dish that evokes secrecy and allure. Served on a pitch-black plate, the recipe presents a cohesive dark theme featuring black risotto tinted with squid ink, tender cuts of squid, and silken ribbons of black olives. Gently steamed white asparagus adds a touch of elegance, while the truffle oil infuses a luxurious aroma. Thinly sliced shiitake mushrooms bring an earthy depth, all tied together by a subtle crunch of black sesame seeds. An exquisite dish for the daring palate, marrying the enigma of darkness with the richness of flavors."
+    ]
+}
