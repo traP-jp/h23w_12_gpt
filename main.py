@@ -104,8 +104,6 @@ def generate_recipe_and_image(client, cooking_name):
         return extracted_json, image_url
     else:
         return "Failed to generate recipe", "No image generated"
-    
-client = OpenAI(api_key='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')
 
 
 def save_json_to_file(json_data, file_name):
@@ -168,6 +166,7 @@ def download_and_save_image(image_url, file_name):
         print(f"An error occurred while downloading the image: {e}")
 
 # 使用例
+client = OpenAI(api_key='')
 recipe_name = ""
 recipe_json, image_url = generate_recipe_and_image(client, recipe_name)
 
