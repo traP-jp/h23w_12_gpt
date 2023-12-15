@@ -4,10 +4,12 @@ import re
 import json
 import requests
 
+
+
 def generate_recipe_and_image(client, cooking_name):
     PROMPT = """
     ###見本
-        "name": "レオナルド・ダ・ウィンチ",
+        "cooking_name": "レオナルド・ダ・ウィンチ",
         "comment": "この名前から連想されるのは、芸術性とイタリアの伝統的な味わいです。そこで、イタリアンスタイルの豪華な料理を想像しましょう。この料理は、鮮やかな色合いとモダンな味わいが特徴です。見た目にも華やかで、特別な日にぴったりの一品になるでしょう。",
         "ingredient": [
             "ニンニク 2片（みじん切り）",
@@ -36,7 +38,7 @@ def generate_recipe_and_image(client, cooking_name):
             "A dish inspired by Leonardo da Vinci, featuring a plate of penne pasta mixed with sautéed prosciutto, mini tomatoes, and fresh basil. Topped with slices of mozzarella cheese and a sprinkle of Parmesan, garnished elegantly on a ceramic plate. The setting is artistic and sophisticated, embodying the essence of Italian cuisine with a modern twist."
             ]
         
-    "name": " ",
+    "cooking_name": "",
     "comment": "その料理の由来,雰囲気",
     "ingredient": [ ],
     "seasoning": [ ],
@@ -54,11 +56,11 @@ def generate_recipe_and_image(client, cooking_name):
 
     def query_openai(prompt):
         retries = 0
-        while retries < MAX_RETRIES:
+        while retries < MAX_RETRIES:###現在は機能していない
             try:
                 print("\nTHINKING...")
                 response = client.chat.completions.create(
-                    model="gpt-3.5-turbo-1106",###gpt-4-1106-previewgpt-3.5-turbo-1106
+                    model="gpt-4-1106-preview",###gpt-4-1106-previewgpt-3.5-turbo-1106
                     messages=[{"role": "user", "content": prompt}]
                 )
                 return response
@@ -74,22 +76,21 @@ def generate_recipe_and_image(client, cooking_name):
             print("Failed to get a response after multiple retries.")
             return None
 
-    formatted_prompt = PROMPT.format(text=cooking_name)
-    
-    response = query_openai(formatted_prompt)
+    formatted_prompt = PROMPT.format(text=cooking_name)###プロンプトに入力（料理名）を埋め込み
+    response = query_openai(formatted_prompt)###埋め込んだプロンプトをopenaiに投げる
     
     print(response)
 
-
+    ###detailed_descriptionの出力を整形してjsonにしてからDALLにプロンプトとして渡す
     if response:
         json_part = re.search(r'\{.*\}', response.choices[0].message.content, re.DOTALL)
         extracted_json = json_part.group() if json_part else "No JSON format found"
 
-        match = re.search(r'"Detailed Description": \[([^\]]*)\]', response.choices[0].message.content)
+        match = re.search(r'"detailed_description": \[([^\]]*)\]', response.choices[0].message.content)
         if match:
             detailed_description = match.group(1).strip().strip('"')
         else:
-            detailed_description = "No detailed description found."
+            detailed_description = "No detailed_description found."
 
         image_response = client.images.generate(
             model="dall-e-3",
@@ -99,14 +100,14 @@ def generate_recipe_and_image(client, cooking_name):
             n=1,
             style="vivid"
         )
-
-        image_url = image_response.data[0].url if image_response else "No image generated"
-        return extracted_json, image_url
+        
+        image_url = image_response.data[0].url if image_response else "No image generated"###urlのみを選ぶためのところ
+        return extracted_json, image_url###一つ目の関数の出力となる
     else:
         return "Failed to generate recipe", "No image generated"
 
 
-def save_json_to_file(json_data, file_name):
+def save_json_to_file(json_data, file_name):##jsonファイルを作って保存
     try:
         data = json.loads(json_data)
         with open(file_name, 'w', encoding='utf-8') as file:
@@ -118,7 +119,7 @@ def save_json_to_file(json_data, file_name):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-def update_json_with_image_url(file_name, image_url):
+def update_json_with_image_url(file_name, image_url):##josnファイルにurlをかきこみ
     try:
         with open(file_name, 'r+', encoding='utf-8') as file:
             data = json.load(file)
@@ -130,7 +131,7 @@ def update_json_with_image_url(file_name, image_url):
     except Exception as e:
         print(f"An error occurred while updating the file: {e}")
 
-def download_and_save_image(image_url, file_name):
+def download_and_save_image(image_url, file_name):###url先の画像を保存する
     try:
         response = requests.get(image_url)
         response.raise_for_status()
@@ -146,24 +147,7 @@ def download_and_save_image(image_url, file_name):
     except requests.RequestException as e:
         print(f"An error occurred while downloading the image: {e}")
 
-
-def download_and_save_image(image_url, file_name):
-    try:
-        response = requests.get(image_url)
-        response.raise_for_status()
-
-        base_file_name = file_name.rsplit('.', 1)[0]
-
-        image_file_name = f"{base_file_name}.jpg"
-
-        with open(image_file_name, 'wb') as file:
-            file.write(response.content)
-
-        print(f"Image saved successfully as {image_file_name}")
-    except requests.RequestException as e:
-        print(f"An error occurred while downloading the image: {e}")
-
-def convert_json_to_dict(json_data):
+def convert_json_to_dict(json_data):###jsonをdictにして返す
     try:
         data = json.loads(json_data)
         print("JSON data successfully converted to dict.")
@@ -172,16 +156,16 @@ def convert_json_to_dict(json_data):
         print("Failed to decode JSON data.")
         return None
 
-def update_dict_with_image_url(data, image_url):
+def update_dict_with_image_url(data, image_url):###dcitにurlを書き込み
     try:
         data["picture_url"] = image_url
         print("picture_url added successfully to dict.")
     except Exception as e:
         print(f"An error occurred while updating the dict: {e}")
 
-# 使用例
-client = OpenAI()
-recipe_name = ""###ここに料理名
+# 使用部分
+client = OpenAI()###apikyeの設定（環境変数を使っていれば空欄）
+recipe_name = "地中グミ"###ここに料理名
 recipe_json, image_url = generate_recipe_and_image(client, recipe_name)
 
 # JSONデータの検証と辞書への変換
@@ -189,10 +173,10 @@ recipe_dict = convert_json_to_dict(recipe_json)
 if recipe_dict is None:
     print("Received JSON data is not valid.")
 else:
-    saved_file_name = save_json_to_file(recipe_json, "recipe11.json")
+    saved_file_name = save_json_to_file(recipe_json, "recipe14.json")
     
     if saved_file_name is not None:
         download_and_save_image(image_url, saved_file_name)
 
     update_dict_with_image_url(recipe_dict, image_url)
-    ####recipe_dictでdictが返ってくる
+###recipe_dictが欲しかったdictの料理データ
