@@ -62,11 +62,11 @@ def generate_recipe_and_image(client, cooking_name):
                     messages=[{"role": "user", "content": prompt}]
                 )
                 return response
-            except OpenAI.error.RateLimitError:
-                print(f"RateLimitError encountered. Retrying in {RETRY_DELAY} seconds...")
-                time.sleep(RETRY_DELAY)
-                RETRY_DELAY *= 2
-                retries += 1
+            #except OpenAI.error.RateLimitError:
+                #print(f"RateLimitError encountered. Retrying in {RETRY_DELAY} seconds...")
+                #time.sleep(RETRY_DELAY)
+                #RETRY_DELAY *= 2
+                #retries += 1
             except Exception as e:
                 print(e)
             break
@@ -132,7 +132,6 @@ def update_json_with_image_url(file_name, image_url):
 
 def download_and_save_image(image_url, file_name):
     try:
-        # 画像をダウンロード
         response = requests.get(image_url)
         response.raise_for_status()
 
@@ -150,7 +149,6 @@ def download_and_save_image(image_url, file_name):
 
 def download_and_save_image(image_url, file_name):
     try:
-        # 画像をダウンロード
         response = requests.get(image_url)
         response.raise_for_status()
 
@@ -165,13 +163,36 @@ def download_and_save_image(image_url, file_name):
     except requests.RequestException as e:
         print(f"An error occurred while downloading the image: {e}")
 
+def convert_json_to_dict(json_data):
+    try:
+        data = json.loads(json_data)
+        print("JSON data successfully converted to dict.")
+        return data
+    except json.JSONDecodeError:
+        print("Failed to decode JSON data.")
+        return None
+
+def update_dict_with_image_url(data, image_url):
+    try:
+        data["Image URL"] = image_url
+        print("Image URL added successfully to dict.")
+    except Exception as e:
+        print(f"An error occurred while updating the dict: {e}")
+
 # 使用例
-client = OpenAI(api_key='')
-recipe_name = ""
+client = OpenAI()
+recipe_name = ""###ここに料理名
 recipe_json, image_url = generate_recipe_and_image(client, recipe_name)
 
-saved_file_name = save_json_to_file(recipe_json, "recipe10.json")
+# JSONデータの検証と辞書への変換
+recipe_dict = convert_json_to_dict(recipe_json)
+if recipe_dict is None:
+    print("Received JSON data is not valid.")
+else:
+    saved_file_name = save_json_to_file(recipe_json, "recipe11.json")
+    
+    if saved_file_name is not None:
+        download_and_save_image(image_url, saved_file_name)
 
-update_json_with_image_url(saved_file_name, image_url)
-
-download_and_save_image(image_url, saved_file_name)
+    update_dict_with_image_url(recipe_dict, image_url)
+    ####recipe_dictでdictが返ってくる
