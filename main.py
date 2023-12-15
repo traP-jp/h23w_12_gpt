@@ -4,6 +4,7 @@ import re
 import json
 import requests
 
+
 def generate_recipe_and_image(client, cooking_name):
     PROMPT = """
     ###見本
@@ -58,15 +59,15 @@ def generate_recipe_and_image(client, cooking_name):
             try:
                 print("\nTHINKING...")
                 response = client.chat.completions.create(
-                    model="gpt-3.5-turbo-1106",###gpt-4-1106-previewgpt-3.5-turbo-1106
+                    model="gpt-3.5-turbo-1106",  ###gpt-4-1106-previewgpt-3.5-turbo-1106
                     messages=[{"role": "user", "content": prompt}]
                 )
                 return response
-            #except OpenAI.error.RateLimitError:
-                #print(f"RateLimitError encountered. Retrying in {RETRY_DELAY} seconds...")
-                #time.sleep(RETRY_DELAY)
-                #RETRY_DELAY *= 2
-                #retries += 1
+            # except OpenAI.error.RateLimitError:
+            # print(f"RateLimitError encountered. Retrying in {RETRY_DELAY} seconds...")
+            # time.sleep(RETRY_DELAY)
+            # RETRY_DELAY *= 2
+            # retries += 1
             except Exception as e:
                 print(e)
             break
@@ -75,11 +76,10 @@ def generate_recipe_and_image(client, cooking_name):
             return None
 
     formatted_prompt = PROMPT.format(text=cooking_name)
-    
-    response = query_openai(formatted_prompt)
-    
-    print(response)
 
+    response = query_openai(formatted_prompt)
+
+    print(response)
 
     if response:
         json_part = re.search(r'\{.*\}', response.choices[0].message.content, re.DOTALL)
@@ -118,6 +118,7 @@ def save_json_to_file(json_data, file_name):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+
 def update_json_with_image_url(file_name, image_url):
     try:
         with open(file_name, 'r+', encoding='utf-8') as file:
@@ -130,22 +131,6 @@ def update_json_with_image_url(file_name, image_url):
     except Exception as e:
         print(f"An error occurred while updating the file: {e}")
 
-def download_and_save_image(image_url, file_name):
-    try:
-        response = requests.get(image_url)
-        response.raise_for_status()
-
-        base_file_name = file_name.rsplit('.', 1)[0]
-
-        image_file_name = f"{base_file_name}.jpg"
-
-        with open(image_file_name, 'wb') as file:
-            file.write(response.content)
-
-        print(f"Image saved successfully as {image_file_name}")
-    except requests.RequestException as e:
-        print(f"An error occurred while downloading the image: {e}")
-
 
 def download_and_save_image(image_url, file_name):
     try:
@@ -162,6 +147,24 @@ def download_and_save_image(image_url, file_name):
         print(f"Image saved successfully as {image_file_name}")
     except requests.RequestException as e:
         print(f"An error occurred while downloading the image: {e}")
+
+
+def download_and_save_image(image_url, file_name):
+    try:
+        response = requests.get(image_url)
+        response.raise_for_status()
+
+        base_file_name = file_name.rsplit('.', 1)[0]
+
+        image_file_name = f"{base_file_name}.jpg"
+
+        with open(image_file_name, 'wb') as file:
+            file.write(response.content)
+
+        print(f"Image saved successfully as {image_file_name}")
+    except requests.RequestException as e:
+        print(f"An error occurred while downloading the image: {e}")
+
 
 def convert_json_to_dict(json_data):
     try:
@@ -172,6 +175,7 @@ def convert_json_to_dict(json_data):
         print("Failed to decode JSON data.")
         return None
 
+
 def update_dict_with_image_url(data, image_url):
     try:
         data["picture_url"] = image_url
@@ -179,9 +183,10 @@ def update_dict_with_image_url(data, image_url):
     except Exception as e:
         print(f"An error occurred while updating the dict: {e}")
 
+
 # 使用例
 client = OpenAI()
-recipe_name = ""###ここに料理名
+recipe_name = ""  ###ここに料理名
 recipe_json, image_url = generate_recipe_and_image(client, recipe_name)
 
 # JSONデータの検証と辞書への変換
@@ -190,7 +195,7 @@ if recipe_dict is None:
     print("Received JSON data is not valid.")
 else:
     saved_file_name = save_json_to_file(recipe_json, "recipe11.json")
-    
+
     if saved_file_name is not None:
         download_and_save_image(image_url, saved_file_name)
 
