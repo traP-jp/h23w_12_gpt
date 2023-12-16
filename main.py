@@ -186,5 +186,5 @@ def executor(name):
 
     return recipe_info
 
-recipe = executor("秋葉荊棘")
-print(recipe)
+# recipe = executor("秋葉荊棘")
+# print(recipe)
