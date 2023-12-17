@@ -47,7 +47,7 @@ PROMPT = """
 2.Setting the Scene: The background or context of the image is also important. I create an overall image of the scene, like what kind of plate the dish is on, what the surrounding atmosphere is like, etc.
 3.Artistic and Creative Expression: To enhance the uniqueness and artistry of the image, I sometimes incorporate creative elements or distinctive styles.
 4.Color Palette: Mentioning specific colors (like deep blues, purples, and shimmering silvers) could help convey the cosmic theme more vividly."]
-###見本を参考にして与えた料理二人前のレシピを書いてjson形式で出力して
+# 見本を参考にして与えた料理二人前のレシピを書いてjson形式で出力してください
 {text}
 """
 
@@ -86,7 +86,8 @@ def query_gpt(client, prompt):
         json_part = re.search(r'\{.*\}', response.choices[0].message.content, re.DOTALL)
         extracted_json = json_part.group()
         recipe_info = json.loads(extracted_json)
-
+        if 'cooking_name' in recipe_info:
+            recipe_info['name'] = recipe_info.pop('cooking_name')
         # 画像生成用のプロンプトを抽出
         match = re.search(r'"detailed_description": \[([^\]]*)\]', response.choices[0].message.content)
         if match:
@@ -119,7 +120,7 @@ def query_dall_e(client, prompt):
         # DALL-Eモデルに問い合わせ
         response = client.images.generate(
             model = 'dall-e-3',
-            prompt = f'Draw a complete dish on one plate.{prompt}',
+            prompt = f'# Draw a complete dish on one plate. # Draw it realistic. # {prompt}',
             size = '1024x1024',
             n = 1,
             style = 'vivid'
